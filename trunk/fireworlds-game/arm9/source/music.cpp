@@ -24,6 +24,7 @@ const char* filenamesMP3[] = {
    "fat:/data/fworlds/latenght.mp3", //4
    "fat:/data/fworlds/hardtech.mp3", //5 
    "fat:/data/fworlds/happy.mp3", //6
+   "fat:/data/fworlds/dotmw4.mp3", //7
    };
    
 const char* filenamesMID[] = {
@@ -39,6 +40,7 @@ const char* filenamesMID[] = {
    "fat:/data/fworlds/latenght.mid",
    "fat:/data/fworlds/hardtech.mid",
    "fat:/data/fworlds/happy.mid",
+   "fat:/data/fworlds/dotmw4.mid",
    };
    
 const int syncChannels[][5] = {

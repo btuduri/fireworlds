@@ -53,6 +53,8 @@ class Scene
 	int musicNumber;
 	
 	f32 zoom;
+	bool switchesActivated[32];
+	bool switchesActive[32];
 	
 	Scene();
 	virtual ~Scene();
@@ -78,7 +80,7 @@ class Scene
 	bool inCamStrict(f32 x, f32 y);
 	virtual void calcGravityFor(Actor* act);
 	void toWorldCoords(f32& dx, f32& dy, f32 x, f32 y);
-	
+	void renderString(const char* str, f32 x, f32 y, int r, int g, int b);
 };
 
 #endif

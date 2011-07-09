@@ -207,10 +207,32 @@ int irand2(int n)
 
 void LevelScene::tick()
 {
-	if((inputKeysDown & KEY_START))
+	if(inputKeysDown & KEY_START)
+	{
 		paused = !paused;
+		pauseOption = 0;
+	}
 	
-	if(paused) return;
+	if(paused)
+	{
+		if(inputKeysRepeat & KEY_DOWN)
+			pauseOption++;
+		if(inputKeysRepeat & KEY_UP)
+			pauseOption--;
+			
+		pauseOption = ((pauseOption%3)+3)%3;
+		
+		
+		if(inputKeysRepeat & KEY_A && canChangeScene())
+		{
+			if(pauseOption == 0) paused = false;
+			if(pauseOption == 1) doSceneChange(new LevelScene(levelNum));
+			if(pauseOption == 2) doSceneChange(new LevelSelectScene());
+			
+		}
+	
+		return;
+	}
 	
 	for(int i = 0; i < 6; i++)
 	{
@@ -279,11 +301,9 @@ void LevelScene::tick()
 	if(inputKeysDown & KEY_X)
 		activatePlayer();
 	
-	if((inputKeysDown & KEY_Y) && canChangeScene()) 
+	if((inputKeysDown & KEY_SELECT) && canChangeScene()) 
 		doSceneChange(new LevelScene(levelNum));
 
-	if((inputKeysDown & KEY_SELECT) && canChangeScene()) 
-		doSceneChange(new LevelSelectScene());
 	/*
 	//Looks distracting.
 	if(switchesActive[2] != oldSwitch2)
@@ -297,6 +317,8 @@ void LevelScene::tick()
 
 void LevelScene::render()
 {
+	if(paused) return;
+	
 	Scene::render();
 	
 	lev->render(xCam, yCam);
@@ -308,6 +330,7 @@ void LevelScene::render()
 
 void LevelScene::renderPerspective()
 {
+	if(paused) return;
 	Scene::renderPerspective();
 }
 
@@ -315,24 +338,14 @@ void LevelScene::renderUnrotated()
 {
 	if(paused)
 	{
-		glPolyFmt(POLY_ALPHA(27+rand()%3) | POLY_ID(BG_FX2_POLYID) | POLY_CULL_NONE);
-		glColor3b(255, 160+irand(80), 0);
-		renderChar('P', -50+irand(1), frand(2), 10);
-		glPolyFmt(POLY_ALPHA(27+rand()%3) | POLY_ID(BG_FX2_POLYID) | POLY_CULL_NONE);
-		glColor3b(255, 160+irand(80), 0);
-		renderChar('A', -25+irand(1), frand(2), 10);
-		glPolyFmt(POLY_ALPHA(27+rand()%3) | POLY_ID(BG_FX2_POLYID) | POLY_CULL_NONE);
-		glColor3b(255, 160+irand(80), 0);
-		renderChar('U', -0+irand(1), frand(2), 10);
-		glPolyFmt(POLY_ALPHA(27+rand()%3) | POLY_ID(BG_FX2_POLYID) | POLY_CULL_NONE);
-		glColor3b(255, 160+irand(80), 0);
-		renderChar('S', +25+irand(1), frand(2), 10);
-		glPolyFmt(POLY_ALPHA(27+rand()%3) | POLY_ID(BG_FX2_POLYID) | POLY_CULL_NONE);
-		glColor3b(255, 160+irand(80), 0);
-		renderChar('E', +50+irand(1), frand(2), 10);
+		renderString("PAUSE", 0, 70, 255, 100, 0);
+
+		renderString("CONTINUE", 0, 10, pauseOption==0?255:80, 150, 255);
+		renderString("RESTART", 0, -30, pauseOption==1?255:80, 150, 255);
+		renderString("EXIT", 0, -70, pauseOption==2?255:80, 150, 255);
 	}
-	
-	Scene::renderUnrotated();
+	else
+		Scene::renderUnrotated();
 }
 
 void LevelScene::calcGravityFor(Actor* act)

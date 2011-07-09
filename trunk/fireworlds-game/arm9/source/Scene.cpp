@@ -5,6 +5,9 @@
 #include "sub.h"
 #include "music.h"
 
+#include "polyids.h"
+#include "textures.h"
+
 Scene::Scene()
 {
 	xCam = 0;
@@ -36,6 +39,12 @@ Scene::Scene()
 	
 	zoom = 1;
 	videoPath = NULL;
+	
+	for(int i = 0; i < 32; i++)
+	{
+		switchesActive[i] = false;
+		switchesActivated[i] = false;
+	}
 }
 
 Scene::~Scene()
@@ -228,3 +237,24 @@ void Scene::calcGravityFor(Actor* act)
 	act->gvs = 0.17;
 }
 
+void Scene::renderString(const char* str, f32 x, f32 y, int r, int g, int b)
+{
+	int l = 0;
+	while(str[l] != 0) l++;
+	
+	x -= (l*25) / 2;
+	
+	int i = 0;
+	while(str[i] != 0)
+	{
+		glPolyFmt(POLY_ALPHA(27+rand()%3) | POLY_ID(BG_FX2_POLYID) | POLY_CULL_NONE);
+		int rr = r+irand(80); if(rr < 0) rr = 0; if(rr > 255) rr = 255;
+		int gg = g+irand(80); if(gg < 0) gg = 0; if(gg > 255) gg = 255;
+		int bb = b+irand(80); if(bb < 0) bb = 0; if(bb > 255) bb = 255;
+		
+		glColor3b(rr, gg, bb);
+		renderChar(str[i], x+frand(1), y+frand(2), 10);
+		x += 25;
+		i++;
+	}
+}

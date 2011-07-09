@@ -60,7 +60,7 @@ struct LevelStruct
 	u32 textLen;
 }; 
 
-class LevelScene;
+class Scene;
 
 class Level
 {
@@ -72,12 +72,12 @@ class Level
 	ObjectsBlock* objs;
 	ActorsBlock* acts;
 	
-	LevelScene* sc;
+	Scene* sc;
 	const char* levelText;
 	
 	int sparkleTime;
 	
-	Level(const char* file, LevelScene* sc);
+	Level(const char* file, Scene* sc);
 	~Level();
 	
 	void render(f32 x, f32 y); //2 f32's
@@ -89,13 +89,6 @@ class Level
 	LevelObj* collisionBlock(int x, int y, int ox,int oy, int& vxr, int& vyr);
 //	bool collision(f32 x, f32 y);
 
-	int whatSide(LevelObj& obj, int a, int b, int x, int y);
-	bool outside(LevelObj& obj, int a, int b, int x, int y);
-	bool collisionWith(LevelObj& obj, f32 x, f32 y);
-
-	void projectVecToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by);
-	void projectToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by);
-	f32 distToLine(f32  x, f32 y, f32 x1, f32 y1, f32 x2, f32 y2);
 	void fixCoordsWithObj(LevelObj& obj, Actor* act);
 	void fixCoords(Actor* act);
 	void addSparkles(LevelObj& obj);
@@ -104,5 +97,17 @@ class Level
 	
 	bool isBehaviorSolid(int b);
 };
+
+void renderObject(LevelObj& obj, f32 xx, f32 yy, Scene* sc);
+bool isObjOnScreen(LevelObj& obj, int xx, int  yy);
+
+int whatSide(LevelObj& obj, int a, int b, int x, int y);
+bool outside(LevelObj& obj, int a, int b, int x, int y);
+bool collisionWith(LevelObj& obj, f32 x, f32 y);
+
+void projectVecToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by);
+void projectToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by);
+f32 distToLine(f32  x, f32 y, f32 x1, f32 y1, f32 x2, f32 y2);
+
 
 #endif
