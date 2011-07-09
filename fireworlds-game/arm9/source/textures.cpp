@@ -61,7 +61,7 @@ void genTextureFromImg(int n, int offs)
 		}
 
 	glBindTexture(n, textureIDS[n]);
-	glTexImage2D(0, 0, GL_RGB8_A5, TEXTURE_SIZE_64, TEXTURE_SIZE_64, 0, TEXGEN_TEXCOORD, &texdata);
+	glTexImage2D(0, 0, GL_RGB8_A5, TEXTURE_SIZE_64, TEXTURE_SIZE_64, 0, TEXGEN_TEXCOORD | GL_TEXTURE_WRAP_T | GL_TEXTURE_WRAP_S, &texdata);
 
 	u16 paldata[8];
 	for(int i = 0; i <8; i++)

@@ -137,11 +137,6 @@ void LevelSelectScene::tick()
 		touchDownY = touchWorldY;
 		if(inputTouch.px >= 256-50 && inputTouch.py > 75 && inputTouch.py < 105 && levSelected != -1)
 			goTime = 50;
-		if(inputTouch.px >= 256-50 && inputTouch.py > 115 && inputTouch.py < 145)
-		{
-			goBack = true;
-			goTime = 50;
-		}
 	}
 	else if(inputKeysHeld & KEY_TOUCH)
 	{

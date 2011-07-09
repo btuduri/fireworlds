@@ -15,7 +15,7 @@
 CreditsScene::CreditsScene(bool playVideo) : Scene()
 {
 //	videoPath = "fat:/data/fworlds/ending.vds";
-	musicNumber = 1;
+	musicNumber = playVideo?7:1;
 	topText = "";
 	this->playVideo = playVideo;
 	actors.push_back(new SeaActor(this));

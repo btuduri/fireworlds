@@ -45,4 +45,4 @@ clean:
 
 run: 
 
-	C:/Users/Dario/Desktop/desmume/DeSmuME_VS2010_dev+.exe "/c/users/dario/desktop/svn.dirbaio.net/fireworlds-game/fireworlds-game.nds"
+	C:/Users/Dario/Desktop/desmume/DeSmuME_VS2010_dev+.exe "/c/users/dario/desktop/fireworlds/fireworlds-game/fireworlds-game.nds"

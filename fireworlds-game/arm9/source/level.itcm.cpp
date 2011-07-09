@@ -8,7 +8,7 @@
 #include "polyids.h"
 #include "input.h"
 
-Level::Level(const char* file, LevelScene* sc)
+Level::Level(const char* file, Scene* sc)
 {
 	this->sc = sc;
 	
@@ -85,27 +85,12 @@ void Level::tick(f32 x, f32 y)
 		}
 }
 
-void Level::renderBlock(int bx, int by, f32 xx, f32 yy, bool walls)
+void renderObject(LevelObj& obj, f32 xx, f32 yy, Scene* sc)
 {
 	int x = xx.toint();
 	int y = yy.toint();
-	
-	int offs = objs->blocks[bx][by].offs;
-	int count = objs->blocks[bx][by].count;
-	
 	const int z = 1000;
-	for(int i = 0; i < count; i++)
-	{
-		LevelObj& obj = objs->objs[offs+i];
-		
-		if(walls)
-		{
-			if(obj.type != BEH_WALL) continue;
-		}
-		else
-		{
-			if(obj.type == BEH_WALL) continue;
-		}
+
 		if(obj.type == BEH_WATER || obj.type == BEH_LAVA || obj.type == BEH_WATERDOWN || obj.type == BEH_LAVADOWN)
 		{
 			bool top = obj.type == BEH_WATER || obj.type == BEH_LAVA;
@@ -198,6 +183,7 @@ void Level::renderBlock(int bx, int by, f32 xx, f32 yy, bool walls)
 		}
 		else
 		{
+
 			int a = 28;
 			if(obj.type == BEH_WALL)
 				glColor3b(200, 200, 255);
@@ -235,7 +221,27 @@ void Level::renderBlock(int bx, int by, f32 xx, f32 yy, bool walls)
 
 			glEnd();
 		}
+}
+void Level::renderBlock(int bx, int by, f32 xx, f32 yy, bool walls)
+{
+	
+	int offs = objs->blocks[bx][by].offs;
+	int count = objs->blocks[bx][by].count;
+	
+	for(int i = 0; i < count; i++)
+	{
+		LevelObj& obj = objs->objs[offs+i];
 		
+		if(walls)
+		{
+			if(obj.type != BEH_WALL) continue;
+		}
+		else
+		{
+			if(obj.type == BEH_WALL) continue;
+		}
+
+		renderObject(obj, xx, yy, sc);
 	}
 }
 
@@ -365,19 +371,19 @@ void Level::tickBlock(int bx, int by, f32 x, f32 y)
 }
 
 
-inline int Level::whatSide(LevelObj& obj, int a, int b, int x, int y)
+inline int whatSide(LevelObj& obj, int a, int b, int x, int y)
 {
     return (obj.x[b]-obj.x[a])*(y-obj.y[a]) - (obj.y[b]-obj.y[a])*(x-obj.x[a]);
 }
 
-inline bool Level::outside(LevelObj& obj, int a, int b, int x, int y)
+inline bool outside(LevelObj& obj, int a, int b, int x, int y)
 {
 	int r = whatSide(obj, a, b, x, y);
 	
 	return r > 0;
 }
 
-inline bool Level::collisionWith(LevelObj& obj, f32 px, f32 py)
+inline bool collisionWith(LevelObj& obj, f32 px, f32 py)
 {
 	int x = px.toint();
 	int y = py.toint();
@@ -441,7 +447,7 @@ inline void Level::addSparkles(LevelObj& obj)
 }
 
 
-inline void Level::projectToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by)
+inline void projectToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by)
 { 
 	f32 r_numerator = (cx-ax)*(bx-ax) + (cy-ay)*(by-ay);
 	f32 r_denomenator = (bx-ax)*(bx-ax) + (by-ay)*(by-ay);
@@ -452,7 +458,7 @@ inline void Level::projectToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 b
 }
 
 
-inline void Level::projectVecToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by)
+inline void projectVecToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f32 by)
 { 
 	f32 r_numerator = cx*(bx-ax) + cy*(by-ay);
 	f32 r_denomenator = (bx-ax)*(bx-ax) + (by-ay)*(by-ay);
@@ -462,7 +468,7 @@ inline void Level::projectVecToLine(f32& cx, f32& cy, f32 ax, f32 ay, f32 bx, f3
     cy = r*(by-ay);
 }
 
-inline f32 Level::distToLine(f32  cx, f32 cy, f32 ax, f32 ay, f32 bx, f32 by)
+inline f32 distToLine(f32  cx, f32 cy, f32 ax, f32 ay, f32 bx, f32 by)
 { 
 	f32 r_numerator = (cx-ax)*(bx-ax) + (cy-ay)*(by-ay);
 	f32 r_denomenator = (bx-ax)*(bx-ax) + (by-ay)*(by-ay);
@@ -648,3 +654,29 @@ bool Level::isBehaviorSolid(int b)
 	if(b == BEH_PORTAL2 && !sc->switchesActive[1]) return true;
 	return false;
 }
+
+bool isObjOnScreen(LevelObj& obj, int xx, int yy)
+{
+	int xMin = obj.x[0];
+	int xMax = obj.x[0];
+	int yMin = obj.y[0];
+	int yMax = obj.y[0];
+	
+	for(int i = 1; i < 4; i++)
+	{
+		if(obj.x[i] < xMin) xMin = obj.x[i];
+		if(obj.x[i] > xMax) xMin = obj.x[i];
+		if(obj.y[i] < yMin) yMin = obj.y[i];
+		if(obj.y[i] > yMax) yMin = obj.y[i];
+	}
+	
+	if(xMin < xx+128 && xMax > xx-128)
+		if(yMin < yy+128 && yMax > yy-128)
+			return true;
+	
+	
+	return false;
+}
+
+
+

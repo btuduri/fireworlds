@@ -12,6 +12,7 @@
 #include "LevelScene.h"
 #include "LevelSelectScene.h"
 #include "CreditsScene.h"
+#include "EditorScene.h"
 #include "level.h"
 #include <fat.h>
 
@@ -247,7 +248,8 @@ int main()
 
 	if(runningInEmu)
 	{
-		iprintf("WARNING: Running in an\nemulator. This is not\nrecommended.\n\n");
+		iprintf("WARNING: Running in an\nemulator. This is not\nrecommended.\n\nLoading...\n\n");
+//		for(int i = 0; i < 200; i++) swiWaitForVBlank();
 /*		iprintf("Press A to continue\n\n");
 		while(!keysDown() & KEY_A)
 		{
@@ -324,6 +326,7 @@ int main()
 //	sc = new LevelSelectScene();
 	sc = new IntroScene();
 //	sc = new CreditsScene(true);
+//	sc = new EditorScene(5);
 	sc->onSceneBegin();
 	
 	glLight(0, RGB15(20,20,20) , floattov10(1), floattov10(-1.0), -1);
@@ -430,7 +433,7 @@ int main()
 			playMusic(mus);
 		}
 */
-/*
+
 		if(inputKeysDown & KEY_R)
 		{
 			debugShown = !debugShown;
@@ -440,7 +443,7 @@ int main()
 
 		if(inputKeysDown & KEY_L)
 			slowMotion = !slowMotion;
-	*/	
+	 
 		int shit = BUS_CLOCK / 100 / 60 / 1024;
 		int dd = timerElapsed(0)/shit;
 		if(dd > 90)	printf("\x1b[16;1HLAG");

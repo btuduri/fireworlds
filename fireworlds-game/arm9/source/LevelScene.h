@@ -34,10 +34,10 @@ class LevelScene : public Scene
 	
 	int levelNum;
 	
-	bool switchesActivated[6];
-	bool switchesActive[6];
 	
 	bool paused;
+	int pauseOption;
+	
 	bool oldSwitch2;
 	
 	void go(f32 x, f32 y);
