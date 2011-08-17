@@ -9,22 +9,29 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 public class Main
 {
     public static void main(String[] args) throws IOException
     {
 
-        File f = new File("C:/Users/Dario/Desktop/planets2/");
+        String path = JOptionPane.showInputDialog("Please enter the path to where the image sequence is.");
+        if(path == null) return;
+        
+        if(!(path.endsWith("/")) ||path.endsWith("\\"))
+            path += "/";
+
+        File f = new File(path);
 //        File f = new File("C:/Users/Dario/Documents/3dsmax/renderoutput/");
         File[] files = f.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".png");
+                return name.toLowerCase().endsWith(".png") ||name.toLowerCase().endsWith(".jpg");
             }
         });
 
-        FileOutputStream ofs = new FileOutputStream("C:/Users/Dario/Desktop/svn.dirbaio.net/fireworlds-game/cflash/test2.dsv");
+        FileOutputStream ofs = new FileOutputStream(path + "out.vds");
         DSVideoEncoder out = new DSVideoEncoder(ofs);
         int fr = 300000;
         int tfr = 0;
@@ -45,6 +52,8 @@ public class Main
             System.out.println(ff.getName() + " "+ tfr+"/"+files.length + (resize?" [R]":""));
         }
         out.close();
+        JOptionPane.showMessageDialog(null, "Finished! You can close the window now.");
+
     }
 
 }
